@@ -51,6 +51,8 @@ void DLRDeviceOnnx::run(MNN::OpT* dstOp, const onnx::NodeProto* onnxNode,
       para->ref_path = attributeProto.s();
     }else if (attributeName == "max_batch") {
       para->max_batch = attributeProto.i();
+    }else if (attributeName == "out_stride") {
+      para->out_stride = attributeProto.i();
     }else if (attributeName == "in_dims") {
       parse_ints(attributeProto,para->in_dims);
     }else if (attributeName == "in_ndims") {
