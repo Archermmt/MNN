@@ -15,20 +15,6 @@ void parse_ints(const onnx::AttributeProto& proto,std::vector<int>& dims){
   }
 }
 
-void split_str(const std::string& s,const std::string& c,std::vector<std::string>& v){
-  std::string::size_type pos1, pos2;
-  size_t len = s.length();
-  pos2 = s.find(c);
-  pos1 = 0;
-  while(std::string::npos != pos2){
-    v.emplace_back(s.substr(pos1, pos2-pos1));
-    pos1 = pos2 + c.size();
-    pos2 = s.find(c, pos1);
-  }
-  if(pos1 != len)
-    v.emplace_back(s.substr(pos1));
-}
-
 MNN::OpType DLRDeviceOnnx::opType() {
   return MNN::OpType_DLRDevice;
 }
@@ -62,7 +48,7 @@ void DLRDeviceOnnx::run(MNN::OpT* dstOp, const onnx::NodeProto* onnxNode,
     }else if (attributeName == "out_ndims") {
       parse_ints(attributeProto,para->out_ndims);
     }else if (attributeName == "out_names") {
-      split_str(attributeProto.s(),",",para->out_names);
+      para->out_names = attributeProto.s();
     }
   }
   dstOp->main.value = para;

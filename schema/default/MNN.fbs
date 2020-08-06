@@ -283,7 +283,7 @@ table DLRDeviceParam {
     out_ndims : [int];
     max_batch : int;
     out_stride : int;
-    out_names : [string];
+    out_names : string;
     ref_path : string;
     target : string;
 }
