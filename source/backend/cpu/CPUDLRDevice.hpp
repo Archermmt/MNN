@@ -6,6 +6,7 @@
 #define CPUDLRDevice_hpp
 
 #include "core/Execution.hpp"
+#include <iostream>
 
 namespace MNN {
 class CPUDLRDevice : public Execution {

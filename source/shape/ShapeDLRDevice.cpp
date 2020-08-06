@@ -4,6 +4,7 @@
 
 #include "core/Macro.h"
 #include "core/SizeComputer.hpp"
+#include <iostream>
 
 namespace MNN {
 class DLRDeviceSizeComputer : public SizeComputer {

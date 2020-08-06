@@ -7,32 +7,95 @@
 
 DECLARE_OP_CONVERTER(DLRDeviceOnnx);
 
+void parse_ints(const onnx::AttributeProto& proto,std::vector<int>& dims){
+    DCHECK(proto.type() == ::onnx::AttributeProto_AttributeType_INTS) << "Node Attribute ERROR";
+    const int size = proto.ints_size();
+    for (int k = 0; k < size; ++k) {
+       dims.push_back(proto.ints(k));
+    }
+}
+
+void split_str(const std::string& s,const std::string& c,std::vector<std::string>& v){
+  std::string::size_type pos1, pos2;
+  size_t len = s.length();
+  pos2 = s.find(c);
+  pos1 = 0;
+  while(std::string::npos != pos2){
+    v.emplace_back(s.substr(pos1, pos2-pos1));
+    pos1 = pos2 + c.size();
+    pos2 = s.find(c, pos1);
+  }
+  if(pos1 != len)
+    v.emplace_back(s.substr(pos1));
+}
+
 MNN::OpType DLRDeviceOnnx::opType() {
-    std::cout<<"calliing DLRDeviceOnnx opType"<<std::endl;
     return MNN::OpType_DLRDevice;
 }
+
 MNN::OpParameter DLRDeviceOnnx::type() {
-    std::cout<<"calliing DLRDeviceOnnx type"<<std::endl;
     return MNN::OpParameter_DLRDeviceParam;
 }
 
 void DLRDeviceOnnx::run(MNN::OpT* dstOp, const onnx::NodeProto* onnxNode,
                      std::vector<const onnx::TensorProto*> initializers) {
-    std::cout<<"calling DLRDeviceOnnx run !!"<<std::endl;
     auto para  = new MNN::DLRDeviceParamT;
-    /*
-    auto para  = new MNN::DLRDeviceParam;
-    para->axis = 0;
     for (int i = 0; i < onnxNode->attribute_size(); ++i) {
         const auto& attributeProto = onnxNode->attribute(i);
         const auto& attributeName  = attributeProto.name();
-        if (attributeName == "axis") {
-            para->axis = attributeProto.i();
+        if (attributeName == "engine") {
+            para->engine = attributeProto.s();
+        }else if (attributeName == "target") {
+            para->target = attributeProto.s();
+        }else if (attributeName == "ref_path") {
+            para->ref_path = attributeProto.s();
+        }else if (attributeName == "max_batch") {
+            para->max_batch = attributeProto.i();
+        }else if (attributeName == "in_dims") {
+            parse_ints(attributeProto,para->in_dims);
+        }else if (attributeName == "in_ndims") {
+            parse_ints(attributeProto,para->in_ndims);
+        }else if (attributeName == "out_dims") {
+            parse_ints(attributeProto,para->out_dims);
+        }else if (attributeName == "out_ndims") {
+            parse_ints(attributeProto,para->out_ndims);
+        }else if (attributeName == "out_names") {
+            split_str(attributeProto.s(),",",para->out_names);
         }
     }
+    /*
+    std::cout<<"set engine with "<<(para->engine)<<std::endl;
+    std::cout<<"set target with "<<(para->target)<<std::endl;
+    std::cout<<"set ref_path with "<<(para->ref_path)<<std::endl;
+    std::cout<<"set max_batch with "<<(para->max_batch)<<std::endl;
+    std::cout<<"set in_dims with ";
+    for(auto s:para->in_dims){
+        std::cout<<s<<":";
+    }
+    std::cout<<std::endl;
+    std::cout<<"set in_ndims with ";
+    for(auto s:para->in_ndims){
+        std::cout<<s<<":";
+    }
+    std::cout<<std::endl;
+    std::cout<<"set out_dims with ";
+    for(auto s:para->out_dims){
+        std::cout<<s<<":";
+    }
+    std::cout<<std::endl;
+    std::cout<<"set out_ndims with ";
+    for(auto s:para->out_ndims){
+        std::cout<<s<<":";
+    }
+    std::cout<<std::endl;
+    std::cout<<"set out_names with ";
+    for(auto s:para->out_names){
+        std::cout<<s<<":";
+    }
+    std::cout<<std::endl;
+    */
 
     dstOp->main.value = para;
-    */
 }
 
 REGISTER_CONVERTER(DLRDeviceOnnx, DLRDevice);
