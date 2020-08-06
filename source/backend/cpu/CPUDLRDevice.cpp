@@ -145,7 +145,7 @@ ErrorCode CPUDLRDevice::onExecute(const vector<Tensor*>& inputs, const std::vect
     for(int b=0;b<batch_size;b++){
       #pragma omp parallel for
       for(int i=0;i<mOutSizes.size();i++){
-        memcpy(out_data+(b*mOutStride+offsets[i])*sizeof(float),tmp_datas[i]+b*mOutSizes[i]*sizeof(float),mOutSizes[i]*sizeof(float));
+        memcpy((float*)out_data+(b*mOutStride+offsets[i]),(float*)tmp_datas[i]+b*mOutSizes[i],mOutSizes[i]*sizeof(float));
       }
     }
   }

@@ -4,3 +4,16 @@ table TensorConvertInfo {
     source:MNN_DATA_FORMAT;
     dest:MNN_DATA_FORMAT;
 }
+
+table DLRDeviceParam {
+    engine : string;
+    in_dims : [int];
+    in_ndims : [int];
+    out_dims : [int];
+    out_ndims : [int];
+    max_batch : int;
+    out_stride : int;
+    out_names : string;
+    ref_path : string;
+    target : string;
+}
